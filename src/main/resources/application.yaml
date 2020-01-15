@@ -1,0 +1,19 @@
+server:
+  port: 8080
+spring:
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ec2-79-125-2-142.eu-west-1.compute.amazonaws.com:5432/da8eukhts5dv2a
+    username: qjnspkgpdbqfjj
+    password: 6a25d1758c92e624732a66f6e1cc298468726d28b3d090c405739061960e3003
+uploadfile:
+  app:
+    jwtSecret: verySecretKey
+    jwtExpiration: 86400
+#  ВНИМАНИЕ когда мы копируем адрес с heroku там путь другоей вместо - jdbc:postgresql(там postgres)
+#  jdbc:postgresql://ec2-79-125-2-142.eu-west-1.compute.amazonaws.com:5432/da8eukhts5dv2a
