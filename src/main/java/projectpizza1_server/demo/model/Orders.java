@@ -34,12 +34,10 @@ public class Orders implements Serializable {
         @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
         private Client client;
 
-
         @ManyToMany
         @JoinTable(name = "My_Pizza_InOrder",
                 joinColumns = {@JoinColumn(name = "Order_id")},
                 inverseJoinColumns = {@JoinColumn(name = "Pizza_id")})
         private List<Pizza> pizzaList=new ArrayList<>();
-
 
 }
