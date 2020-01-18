@@ -6,21 +6,17 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import projectpizza1_server.demo.model.Client;
 import projectpizza1_server.demo.model.Orders;
 import projectpizza1_server.demo.model.Pizza;
 import projectpizza1_server.demo.model.PizzaDTO;
-import projectpizza1_server.demo.repository.ImageRepository;
 import projectpizza1_server.demo.repository.RepositoryClient;
 import projectpizza1_server.demo.repository.RepositoryOrder;
 import projectpizza1_server.demo.repository.RepositoryPizza;
 import projectpizza1_server.demo.serviceImpl.FileStorage;
 
 
-import javax.persistence.criteria.Order;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,24 +30,17 @@ public class ControllerPizza {
     private RepositoryOrder repositoryOrder;
     //для UploadImage
     private FileStorage storage;
-    private ImageRepository imageRepository;
-    private List<String> files;
 
-    public ControllerPizza(RepositoryClient repositoryClient, RepositoryPizza repositoryPizza, RepositoryOrder repositoryOrder, FileStorage storage, ImageRepository imageRepository, List<String> files) {
+
+    @Autowired
+    public ControllerPizza(RepositoryClient repositoryClient, RepositoryPizza repositoryPizza, RepositoryOrder repositoryOrder, FileStorage storage) {
         this.repositoryClient = repositoryClient;
         this.repositoryPizza = repositoryPizza;
         this.repositoryOrder = repositoryOrder;
         this.storage = storage;
-        this.imageRepository = imageRepository;
-        this.files = files;
     }
 
-    @Autowired
-    public ControllerPizza(RepositoryClient repositoryClient, RepositoryPizza repositoryPizza, RepositoryOrder repositoryOrder) {
-        this.repositoryClient = repositoryClient;
-        this.repositoryPizza = repositoryPizza;
-        this.repositoryOrder = repositoryOrder;
-    }
+
 
     @GetMapping("/pizza")
     public List<Pizza> findAllPizza(){
@@ -88,21 +77,33 @@ public class ControllerPizza {
 
 
 
-    @PostMapping
+    @PostMapping("/files/pizza")
     public Pizza savePersonImage(@ModelAttribute PizzaDTO pizzaDTO) {
-        String path = "http://localhost:8080/api/files/";//создаем путь по которому потом будем доставать наше фото
-        System.out.println(pizzaDTO.getFile().getOriginalFilename());
-        Pizza pizza = new Pizza();
-        MultipartFile icon = pizzaDTO.getFile();
-        storage.store(pizzaDTO.getFile());
+            //путь по которому потом будем доставать наше фото
+           //чтобы потом получалось доставать правильно наши фото для Get,
+           //нам нужно правильно указать путь здесь и в нижней функции GetMapping
+            String path = "http://localhost:8080/api/files/";
+            System.out.println(pizzaDTO.getFile().getOriginalFilename());
+            storage.store(pizzaDTO.getFile());
+            Pizza pizza = new Pizza();
 
+            pizza.setName(pizzaDTO.getName());
+            pizza.setSize(pizzaDTO.getSize());
+            pizza.setPrice(pizzaDTO.getPrice());
+            pizza.setImage(path + pizzaDTO.getFile().getOriginalFilename());
+            return repositoryPizza.save(pizza);
+        }
 
-        pizza.setName(pizzaDTO.getName());
-        pizza.setPrice(pizzaDTO.getPrice());
-        pizza.setSize(pizzaDTO.getSize());
-//        pizza.setImage(path + pizzaDTO.getFile().getOriginalFilename());
-        return imageRepository.save(pizza);
+    @GetMapping("/files/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        Resource resource = storage.getFile(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; personfilename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
+
+
+
 
 
 
