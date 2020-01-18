@@ -2,10 +2,7 @@ package projectpizza1_server.demo.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,9 +15,9 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Table(name = "mypizza")
+@ToString
 public class Pizza implements Serializable {
     private static final long serialVersionUID = 2L;
     @Id
@@ -29,6 +26,7 @@ public class Pizza implements Serializable {
     private String name;
     private String size;
     private int price;
+    private String image; //сюда мы передадим MultipartFile
 
   //  @ManyToMany(mappedBy = "pizzaList")
   //  private List<Orders> orders = new ArrayList<>();//set - нельзя одинаковые ид добавлять

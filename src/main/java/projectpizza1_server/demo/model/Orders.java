@@ -24,7 +24,7 @@ public class Orders implements Serializable {
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
         private String address;
-        private Boolean buy;
+//        private Boolean buy;
 
         //    @JsonFormat(pattern = "dd/MM/yyyy")
        //    private LocalDate dateCreated;

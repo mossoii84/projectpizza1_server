@@ -8,6 +8,6 @@ import java.util.List;
 public interface RepositoryOrder extends  JpaRepository<Orders,Long> {
 
 
-    List<Orders> findAllByBuyIsFalse(); //keywords
+    //List<Orders> findAllByBuyIsFalse(); //keywords
     //https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repository-query-keywords
 }

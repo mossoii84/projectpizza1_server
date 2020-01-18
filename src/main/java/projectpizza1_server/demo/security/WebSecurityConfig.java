@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/api/**").permitAll() //эту строчку можно и убрать, тут список пицц для всех
+                .antMatchers("/api/files/img").permitAll() //эту строчку можно и убрать, тут список пицц для всех
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)
