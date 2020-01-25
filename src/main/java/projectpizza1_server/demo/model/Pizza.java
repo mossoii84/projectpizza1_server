@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+
 @Table(name = "mypizza")
 @ToString
 public class Pizza implements Serializable {

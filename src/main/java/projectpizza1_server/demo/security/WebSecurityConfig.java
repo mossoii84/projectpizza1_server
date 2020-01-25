@@ -46,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/api/**").permitAll() //эту строчку можно и убрать, тут список пицц для всех
+                .antMatchers("/api/**").permitAll()
+                //доступ на все сраницы начинающиеся с /api/**
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(entryPoint)

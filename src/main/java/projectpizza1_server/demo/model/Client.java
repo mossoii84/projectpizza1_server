@@ -35,6 +35,12 @@ public class Client implements Serializable {
             mappedBy = "client")
     private List<Orders> ordersList= new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "client")
+    private List<Cart> carts= new ArrayList<>();
+
 
 
     public Client(String name, String card_number) { }
