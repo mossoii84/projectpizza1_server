@@ -5,6 +5,7 @@ import projectpizza1_server.demo.model.Cart;
 import projectpizza1_server.demo.model.Client;
 import projectpizza1_server.demo.model.Orders;
 import projectpizza1_server.demo.model.Pizza;
+import projectpizza1_server.demo.repository.RepositoryCart;
 import projectpizza1_server.demo.repository.RepositoryClient;
 import projectpizza1_server.demo.repository.RepositoryOrder;
 import projectpizza1_server.demo.serviceImpl.service.ServiceCart;
@@ -24,16 +25,19 @@ public class ControllerCart {
     private RepositoryClient repositoryClient;
     private RepositoryOrder repositoryOrder;
     private ServicePizza servicePizza;
+    private RepositoryCart repositoryCart;
     @Autowired
     public ControllerCart(ServiceCart serviceCart,
                           RepositoryClient repositoryClient,
                           RepositoryOrder repositoryOrder,
-                          ServicePizza servicePizza
+                          ServicePizza servicePizza,
+                          RepositoryCart repositoryCart
                           ){
         this.serviceCart = serviceCart;
         this.repositoryClient=repositoryClient;
         this.repositoryOrder=repositoryOrder;
         this.servicePizza=servicePizza;
+        this.repositoryCart=repositoryCart;
     }
 
     //Добавляем Пиццу в Cart, для этого у нас есть зависимость @Many...
@@ -44,9 +48,9 @@ public class ControllerCart {
             Client client=repositoryClient.findByName(principal.getName()).get();
             Orders orders=new Orders();
             List<Cart> cartList=serviceCart.findAll();
-            orders.setCartList(cartList);
             orders.setClient(client);
-
+            orders.setCartList(cartList);
+            orders.setPizzaList(carts.getPizzaList());
             //дата
             Date dateNow = new Date();
             orders.setDateCreatOrder(dateNow);
@@ -54,8 +58,9 @@ public class ControllerCart {
             carts.setOrders(orders);
 
             repositoryOrder.save(orders);
-            //carts.getPizzaList().remove(cartList);
             repositoryClient.save(client); //сохраняем клиента с ордер и carts
+            //удаляем корзину
+            repositoryCart.deleteInBatch(cartList);
             return carts;
         }
 
@@ -77,7 +82,7 @@ public class ControllerCart {
         List<Cart> carts=client.getCarts();
         Cart cart;
         //мы ищем последную корзину и вней уже удаляем пиццу
-        // (логика что у нас много корзин, неоплаченых), но тут она нам не нужна посути
+        // (логика что у нас много корзин, неоплаченых), но тут она нам не нужна
         if(carts.size()!=0){
             cart=carts.get(carts.size()-1);
         }else{

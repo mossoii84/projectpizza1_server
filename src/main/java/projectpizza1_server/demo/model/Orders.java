@@ -30,7 +30,7 @@ public class Orders implements Serializable {
 
         //дата создания заказа
         //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm", timezone="UTC")
         private Date dateCreatOrder;
 
 
@@ -45,5 +45,12 @@ public class Orders implements Serializable {
                 cascade =  CascadeType.ALL,
                 mappedBy = "orders")
         private List<Cart> cartList= new ArrayList<>();
+
+        @ManyToMany
+        @JoinTable(name = "MyOrder_with_MyCartPizzas",
+                joinColumns = {@JoinColumn(name = "Order_id")},
+                inverseJoinColumns = {@JoinColumn(name = "Pizza_id")})
+        private List<Pizza> pizzaList=new ArrayList<>();
+
 
 }
